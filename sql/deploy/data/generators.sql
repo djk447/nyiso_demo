@@ -8,7 +8,7 @@ CREATE TABLE data.generators (
     ptid        int NOT NULL UNIQUE,
     name        varchar,
     location    point,
-    ownder      text,
+    owner      text,
     address     jsonb,
     fields      jsonb
 );

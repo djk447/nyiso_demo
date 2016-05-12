@@ -1,3 +1,5 @@
 localConfig.py
 sqitch.conf
 obj/*
+postgrest
+postgrest.start
