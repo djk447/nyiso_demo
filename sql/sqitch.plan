@@ -1,0 +1,10 @@
+%syntax-version=1.0.0
+%project=nyiso
+%uri=pg://davidkohn:ZincAnode1@localhost:5433/nyiso
+
+
+
+auth/create_administrator 2016-05-12T14:49:52Z David Kohn <djk447@gmail.com> # Adding nyiso_admin user
+data/create_data_schema [auth/create_administrator] 2016-05-12T15:00:23Z David Kohn <djk447@gmail.com> # Create schema to store data
+data/generators [data/create_data_schema] 2016-05-12T15:05:02Z David Kohn <djk447@gmail.com> # Create generators table
+data/rt_lbmp_generators [data/generators] 2016-05-12T15:12:45Z David Kohn <djk447@gmail.com> # Create rt_lbmp_generators table
