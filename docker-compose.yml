@@ -9,9 +9,9 @@ postgrest:
   ports: 
     - "3000:3000"
   environment:
-    - POSTGREST_AUTHENTICATOR=authenticator
+    - POSTGREST_AUTHENTICATOR=postgres
     - POSTGREST_DB=nyiso
     - POSTGREST_SCHEMA=api_v001
-    - POSTGREST_ANONYMOUS=anon
+    - POSTGREST_ANONYMOUS=nyiso_admin
 
 
