@@ -3,3 +3,5 @@ sqitch.conf
 obj/*
 postgrest
 postgrest.start
+__pycache__/*
+sql/pg_dumps/*

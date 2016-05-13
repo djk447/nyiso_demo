@@ -1,0 +1,33 @@
+On a Docker instance, there are a couple things to do in order to get the db to the state we want:
+
+we'll ssh into the machine and link the port from the docker pg instance to local port 15432
+
+For a local docker instance:
+ssh -N -L 15432:172.17.0.2:5432 docker@<instance_ip_address>
+
+pass is tcuser (this assumes we're using boot2docker default)
+
+For a remote instance:
+
+ssh -N -L 15432:172.17.0.2:5432 root@<instance_ip_address> (shouldn't use root eventually, but for now...)
+one assumes that you will have some sort of ssh authentication set up for the remote host in this case.
+
+we'll ssh in every time we want to use sqitch from our local machine to make changes.
+
+But on the first time we have to create our target database
+
+psql -U postgres -h 127.0.0.1 -p 15432 -d postgres
+
+run the command:
+CREATE DATABASE nyiso;
+
+quit psql
+
+then check it worked with:
+psql -U postgres -h 127.0.0.1 -p 15432 -d nyiso
+
+and now you should be ready to use sqitch to do the rest of ddl with the connection url:
+
+db:pg://postgres@127.0.0.1:15432/nyiso
+
+connecting as superuser isn't great, and in future you should change this. For now, I've configured this to run as SU, but set role to a different user for most ddl statements so that once it's deployed fully, it is easy to allow that user to login and they will own the necessary bits.
