@@ -9,6 +9,10 @@ postgrest:
   ports: 
     - "3000:3000"
   environment:
+    - POSTGREST_VERSION 0.3.1.1
+    - POSTGREST_JWT_SECRET thisisnotarealsecret
+    - POSTGREST_MAX_ROWS 1000000
+    - POSTGREST_POOL 200
     - POSTGREST_AUTHENTICATOR=postgres
     - POSTGREST_DB=nyiso
     - POSTGREST_SCHEMA=api_v001

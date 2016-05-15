@@ -1,2 +1,0 @@
-LOG:  ending log output to stderr
-HINT:  Future log output will go to log destination "csvlog".

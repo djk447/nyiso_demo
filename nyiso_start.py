@@ -3,6 +3,8 @@ import datetime
 import pickle
 import random
 from multiprocessing import Pool
+from dateutil.parser import parse as dateParse
+
 
 
 def save_obj(obj, name):
@@ -49,7 +51,6 @@ def getDataFromNYISO(startDate,endDate,genNum):
         "cuvon=1463083068785; cusid=1463083068783; cuvid=c02e1fe6dd3944d7b6258eee1c711e2a",
         "cuvon=1463083114915; cusid=1463083114913; cuvid=c7a8b2de42b34e91a763a8fce7fb1ca9",
         "cuvon=1463083247785; cusid=1463083176572; cuvid=cd278cc4ae114c29bb4aa9e6e0f7f976"
-
     ]
     headers = {
         'cookie': random.choice(cookies),
@@ -72,28 +73,62 @@ def getDataFromNYISO(startDate,endDate,genNum):
         return response
     raise Exception('Not OK',response.reason)
 
+def getMinDate(genName,baseURL='http://159.203.100.177:3000'):
 
-def postToDB(csvText):
-    if len(csvText.splitlines())==1:
-        print('No Data Here')
-        return True
-    url='http://localhost:13000/RT_LBMP_GEN'
+    url = baseURL+"/generators_times"
+
+    querystring = {"id": "eq."+genName, "select": "min_time"}
+
+    payload = ""
+    headers = {
+        'cache-control': "no-cache"
+    }
+
+    response = requests.request("GET", url, data=payload, headers=headers, params=querystring)
+    if len(response.json()):
+        dateStr=response.json()[0].get('min_time')
+        return dateParse(dateStr).date()
+
+
+def postToDB(csvText, baseURL='http://159.203.100.177:3000'):
+    url=baseURL+'/RT_LBMP_GEN'
     response=requests.request("POST",url,data=csvText,headers={'content-type': "text/csv"})
     if response.ok:
         return response
     raise Exception('Post Failed',response.reason)
 
 
-def getDataAndPost(genNum,start=datetime.date(2016,5,11),end=datetime.date(2016,1,1)):
+def getDataAndPost(genNum,start=datetime.date(2016,5,11),end=datetime.date(2014,5,11)):
+    failCount=0
+    genName=getGenerators()[genNum]
+    minDate=getMinDate(genName)
+    if minDate and minDate<start:start=minDate
+    print('Importing Generator '+ genName + ' Start : '+start.strftime("%m/%d/%Y"))
     endDate=start
-    dateStep = datetime.timedelta(weeks=4)
+    dateStep = datetime.timedelta(weeks=6)
     while endDate>end:
         startDate=endDate-dateStep
-        postToDB(getDataFromNYISO(startDate,endDate,genNum).text)
-        print('Finished Generator '+str(genNum)+' : '+startDate.strftime("%m/%d/%Y")+'-'+endDate.strftime("%m/%d/%Y"))
-        endDate=endDate-dateStep
+        message='Generator ' + genName + '('+str(genNum)+') : ' + startDate.strftime("%m/%d/%Y") + '-' + endDate.strftime("%m/%d/%Y")
+        nyisoResponse=getDataFromNYISO(startDate,endDate,genNum)
+        csvText = nyisoResponse.text
+        if len(csvText.splitlines()) == 1:
+            print('No Data For ' + message)
+            failCount+=1
+            if failCount>2:
+                print('Lacking Data for '+ message + ' breaking')
+                break
 
-def mapGetDataToGenNums(genNums):
-    pool=Pool(6)
+        else:
+            failcount=0
+            postToDB(csvText)
+            print('Got Data For '+ message)
+        endDate=endDate-dateStep
+    print('Completed Generator '+genName)
+
+def mapGetDataToGenNums(genNums,poolSize=6):
+    pool=Pool(poolSize)
     pool.map(getDataAndPost,genNums)
     pool.close()
+    print('Mapped Import Complete: '+str(genNums))
+
+mapGetDataToGenNums(list(range(1,len(getGenerators())+1)),16)

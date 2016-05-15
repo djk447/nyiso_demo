@@ -11,3 +11,4 @@ data/rt_lbmp_generators [data/generators] 2016-05-12T15:12:45Z David Kohn <djk44
 api_v001/create [auth/create_administrator] 2016-05-12T16:08:16Z David Kohn <djk447@gmail.com> # Create api_v001 schema
 api_v001/RT_LBMP_GEN.view [api_v001/create] 2016-05-12T16:11:30Z David Kohn <djk447@gmail.com> # Adding realtime LBMP generator view
 api_v001/generators.view [api_v001/create] 2016-05-12T16:23:46Z David Kohn <djk447@gmail.com> # Add generators view
+maint/create_pg_stat_statements 2016-05-15T01:27:52Z David Kohn <djk447@gmail.com> # Adding pg_stat_statements will also need to change postgresql.conf

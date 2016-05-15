@@ -2,4 +2,5 @@
 
 BEGIN;
 DROP VIEW api_v001.generators;
+DROP VIEW api_v001.generators_times;
 COMMIT;
