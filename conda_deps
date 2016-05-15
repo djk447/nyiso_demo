@@ -1,0 +1,23 @@
+name: nyiso
+dependencies:
+- mkl=11.3.1=0
+- numpy=1.11.0=py35_0
+- openssl=1.0.2h=0
+- pandas=0.18.0=np111py35_0
+- pip=8.1.1=py35_1
+- psycopg2=2.6.1=py35_1
+- python=3.5.1=0
+- python-dateutil=2.5.2=py35_0
+- pytz=2016.3=py35_0
+- readline=6.2=2
+- setuptools=20.7.0=py35_0
+- six=1.10.0=py35_0
+- sqlite=3.9.2=0
+- tk=8.5.18=0
+- wheel=0.29.0=py35_0
+- xz=5.0.5=1
+- zlib=1.2.8=0
+- pip:
+  - lxml==3.6.0
+  - plotly==1.9.10
+  - requests==2.10.0
